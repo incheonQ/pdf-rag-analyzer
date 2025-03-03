@@ -8,11 +8,13 @@ void main() async {
   // 저장된 API 키 로드
   final storageService = AnalysisStorageService();
   final apiKey = await storageService.loadApiKey();
-    runApp(const MyApp());
+    runApp(MyApp(initialApiKey: apiKey));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? initialApiKey;
+  
+  const MyApp({super.key, this.initialApiKey});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const FileAnalysisScreen(),
+      home: FileAnalysisScreen(initialApiKey: initialApiKey),
     );
   }
 }

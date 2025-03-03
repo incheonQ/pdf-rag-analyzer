@@ -57,6 +57,9 @@ app.*.map.json
 /android/gradlew.bat
 /android/local.properties
 /android/key.properties
+/android/app/debug
+/android/app/profile
+/android/app/release
 
 # iOS 관련
 /ios/.symlinks/
@@ -68,6 +71,7 @@ app.*.map.json
 /ios/Flutter/flutter_assets/
 /ios/ServiceDefinitions.json
 /ios/Runner/GeneratedPluginRegistrant.*
+
 
 # 환경 파일
 .env

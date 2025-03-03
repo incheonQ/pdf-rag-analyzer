@@ -8,7 +8,9 @@ import 'analysis_storage_service.dart';
 
 
 class FileAnalysisScreen extends StatefulWidget {
-  const FileAnalysisScreen({super.key});
+  final String? initialApiKey;
+  
+  const FileAnalysisScreen({super.key, this.initialApiKey});
 
   @override
   State<FileAnalysisScreen> createState() => _FileAnalysisScreenState();
@@ -27,7 +29,14 @@ class _FileAnalysisScreenState extends State<FileAnalysisScreen> {
   @override
   void initState() {
     super.initState();
-    _loadApiKey();
+
+    // 초기 API 키 설정
+    if (widget.initialApiKey != null && widget.initialApiKey!.isNotEmpty) {
+      _apiKeyController.text = widget.initialApiKey!;
+      _analysisService.apiKey = widget.initialApiKey!;
+    } else {
+      _loadApiKey();
+    }
   }
   
   @override
