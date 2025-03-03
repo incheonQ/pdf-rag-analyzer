@@ -4,6 +4,8 @@ import 'analysis_model.dart';
 import 'analysis_detail_screen.dart';
 import 'pdf_analysis_service.dart';
 import 'dart:typed_data';
+import 'analysis_storage_service.dart';
+
 
 class FileAnalysisScreen extends StatefulWidget {
   const FileAnalysisScreen({super.key});
@@ -13,12 +15,53 @@ class FileAnalysisScreen extends StatefulWidget {
 }
 
 class _FileAnalysisScreenState extends State<FileAnalysisScreen> {
-  // File? selectedFile; // 기존 코드 제거
+
   Uint8List? selectedFileBytes; // 파일 데이터를 바이트 형태로 저장
   String? selectedFileName; // 파일 이름 저장
   List<AnalysisResult> analysisHistory = [];
   bool isAnalyzing = false;
   final PdfAnalysisService _analysisService = PdfAnalysisService();
+  final TextEditingController _apiKeyController = TextEditingController();
+  final AnalysisStorageService _storageService = AnalysisStorageService();
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadApiKey();
+  }
+  
+  @override
+  void dispose() {
+    _apiKeyController.dispose();
+    super.dispose();
+  }
+  
+  // API 키 로드 함수
+  Future<void> _loadApiKey() async {
+    final apiKey = await _storageService.loadApiKey();
+    if (apiKey != null) {
+      setState(() {
+        _apiKeyController.text = apiKey;
+        _analysisService.apiKey = apiKey;
+      });
+    }
+  }
+  
+  // API 키 저장 함수
+  Future<void> _saveApiKey() async {
+    final apiKey = _apiKeyController.text.trim();
+    if (apiKey.isNotEmpty) {
+      await _storageService.saveApiKey(apiKey);
+      _analysisService.apiKey = apiKey;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('API 키가 저장되었습니다')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('API 키를 입력해주세요')),
+      );
+    }
+  }
 
   Future<void> _pickFile() async {
   print('파일 선택 시작');
@@ -114,27 +157,69 @@ class _FileAnalysisScreenState extends State<FileAnalysisScreen> {
         title: const Text('PDF 분석기'),
       ),
       drawer: Drawer(
+  child: Column(
+    children: [
+      DrawerHeader(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        child: const Center(
+          child: Text(
+            '설정 및 기록',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ),
+      ),
+      // API 키 섹션 추가
+      Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              child: const Center(
-                child: Text(
-                  '분석 기록',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
+            const Text(
+              'OpenAI API 키',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Expanded(
-              child: analysisHistory.isEmpty
-                  ? const Center(child: Text('분석 기록이 없습니다'))
-                  : ListView.builder(
-                      itemCount: analysisHistory.length,
+            const SizedBox(height: 8),
+            TextField(
+              controller: _apiKeyController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'API 키를 입력하세요',
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _saveApiKey,
+              child: const Text('API 키 저장'),
+            ),
+          ],
+        ),
+      ),
+      const Divider(),
+      const Padding(
+        padding: EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+        child: Text(
+          '분석 기록',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      Expanded(
+        child: analysisHistory.isEmpty
+          ? const Center(child: Text('분석 기록이 없습니다'))
+          : ListView.builder(
+              itemCount: analysisHistory.length,
                       itemBuilder: (context, index) {
                         final analysis = analysisHistory[index];
                         return ListTile(

@@ -3,18 +3,16 @@ import 'package:http/http.dart' as http;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 class PdfAnalysisService {
   // AI API URL (OpenAI 또는 다른 서비스)
   final String apiUrl = 'https://api.openai.com/v1/chat/completions';
   late final String apiKey;
 
-  PdfAnalysisService() {
-    // .env 파일에서 API 키 로드
-    apiKey = dotenv.env['OPENAI_API_KEY'] ?? '';
-    if (apiKey.isEmpty) {
-      throw Exception('API 키가 설정되지 않았습니다. .env 파일을 확인하세요.');
+  PdfAnalysisService({String? initialApiKey}) {
+    if (initialApiKey != null) {
+      apiKey = initialApiKey;
     }
   }
 

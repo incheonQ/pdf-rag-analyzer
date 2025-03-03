@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'file_analysis_screen.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'analysis_storage_service.dart';
 
 void main() async {
-  await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // 저장된 API 키 로드
+  final storageService = AnalysisStorageService();
+  final apiKey = await storageService.loadApiKey();
+    runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

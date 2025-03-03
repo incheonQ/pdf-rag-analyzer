@@ -37,4 +37,16 @@ class AnalysisStorageService {
       notes: item['notes'] ?? '',
     )).toList();
   }
+
+  // API 키 저장
+Future<void> saveApiKey(String apiKey) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('openai_api_key', apiKey);
+}
+
+// API 키 불러오기
+Future<String?> loadApiKey() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('openai_api_key');
+}
 }
