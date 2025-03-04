@@ -1,9 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'analysis_model.dart';
 import 'analysis_detail_screen.dart';
 import 'pdf_analysis_service.dart';
-import 'dart:typed_data';
 import 'analysis_storage_service.dart';
 
 
@@ -23,15 +23,17 @@ class _FileAnalysisScreenState extends State<FileAnalysisScreen> {
   List<AnalysisResult> analysisHistory = [];
   bool isAnalyzing = false;
   final PdfAnalysisService _analysisService = PdfAnalysisService();
-  final TextEditingController _apiKeyController = TextEditingController();
-  final AnalysisStorageService _storageService = AnalysisStorageService();
+  final TextEditingController _apiKeyController = TextEditingController(); // API 키 입력을 관리하는 텍스트 필드 컨트롤러 
+  final AnalysisStorageService _storageService = AnalysisStorageService(); // 로컬 저장소 (SharedPreference)와의 상호작용
+
+  // 사용자가 텍스트 필드에 입력한 API 키를 컨트롤러가 캡쳐, 저장 서비스가 이를 디바이스에 영구 저장하는 구조
   
   @override
   void initState() {
     super.initState();
 
     // 초기 API 키 설정
-    if (widget.initialApiKey != null && widget.initialApiKey!.isNotEmpty) {
+        if (widget.initialApiKey != null && widget.initialApiKey!.isNotEmpty) {
       _apiKeyController.text = widget.initialApiKey!;
       _analysisService.apiKey = widget.initialApiKey!;
     } else {

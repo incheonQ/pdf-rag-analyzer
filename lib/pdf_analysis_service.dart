@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+
 
 
 class PdfAnalysisService {

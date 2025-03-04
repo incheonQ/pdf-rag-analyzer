@@ -8,6 +8,11 @@ void main() async {
   // 저장된 API 키 로드
   final storageService = AnalysisStorageService();
   final apiKey = await storageService.loadApiKey();
+  if (apiKey != null) {
+    print('불러온 API 키: $apiKey');
+  } else {
+    print('저장된 API 키가 없습니다. 새로 입력해주세요.');
+  }
     runApp(MyApp(initialApiKey: apiKey));
 }
 
@@ -22,7 +27,6 @@ class MyApp extends StatelessWidget {
       title: 'PDF RAG 분석기',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
       ),
       home: FileAnalysisScreen(initialApiKey: initialApiKey),
     );

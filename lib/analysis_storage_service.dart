@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'analysis_model.dart';
 
+
 class AnalysisStorageService {
   static const String _storageKey = 'analysis_history';
   
